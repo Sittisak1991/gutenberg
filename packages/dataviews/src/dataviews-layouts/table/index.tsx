@@ -43,6 +43,7 @@ interface TableColumnFieldProps< Item > {
 	item: Item;
 	isItemClickable: ( item: Item ) => boolean;
 	onClickItem: ( item: Item ) => void;
+	level?: number;
 }
 
 interface TableColumnCombinedProps< Item > {
@@ -59,6 +60,7 @@ interface TableColumnProps< Item > {
 	primaryField?: NormalizedField< Item >;
 	fields: NormalizedField< Item >[];
 	item: Item;
+	level?: number;
 	column: string;
 	view: ViewTableType;
 	isItemClickable: ( item: Item ) => boolean;
@@ -68,6 +70,7 @@ interface TableColumnProps< Item > {
 interface TableRowProps< Item > {
 	hasBulkActions: boolean;
 	item: Item;
+	level?: number;
 	actions: Action< Item >[];
 	fields: NormalizedField< Item >[];
 	id: string;
@@ -109,6 +112,7 @@ function TableColumn< Item >( {
 
 function TableColumnField< Item >( {
 	primaryField,
+	level,
 	item,
 	field,
 	isItemClickable,
@@ -131,6 +135,11 @@ function TableColumnField< Item >( {
 				'dataviews-view-table__primary-field': isPrimaryField,
 			} ) }
 		>
+			{ isPrimaryField && level !== undefined && (
+				<span className="dataviews-view-table__level">
+					{ '— '.repeat( level ) }
+				</span>
+			) }
 			<div { ...clickableProps }>
 				<field.render { ...{ item } } />
 			</div>
@@ -159,6 +168,7 @@ function TableColumnCombined< Item >( {
 function TableRow< Item >( {
 	hasBulkActions,
 	item,
+	level,
 	actions,
 	fields,
 	id,
@@ -247,6 +257,7 @@ function TableRow< Item >( {
 							onClickItem={ onClickItem }
 							fields={ fields }
 							item={ item }
+							level={ level }
 							column={ column }
 							view={ view }
 						/>
@@ -328,6 +339,98 @@ function ViewTable< Item >( {
 	const primaryField = fields.find(
 		( field ) => field.id === view.layout?.primaryField
 	);
+
+	const getPrimaryFieldValue = ( item: Item ) => {
+		return primaryField?.getValue( { item } );
+	};
+
+	const getAllDescendants = (
+		index: number,
+		children: { [ key: number ]: Item[] },
+		levels: number[],
+		levelIndex: number
+	): Item[] => {
+		const nested: Item[] = [];
+
+		if ( children.hasOwnProperty( index ) ) {
+			children[ index ]?.forEach( ( child: Item ) => {
+				const itemId = +getItemId( child );
+				nested.push( child );
+				levels[ itemId ] = levelIndex;
+				nested.push(
+					...getAllDescendants(
+						itemId,
+						children,
+						levels,
+						levelIndex + 1
+					)
+				);
+			} );
+		}
+
+		return nested;
+	};
+
+	const rows: Item[] = [];
+	const topLevelItemIds: number[] = [];
+	const nestedItemIds: number[] = [];
+	const orphans: number[] = [];
+	const children: { [ key: number ]: Item[] } = {};
+	const primaryFieldValues: string[] = [];
+	const levels: number[] = [];
+	if ( !! view.layout?.hierarchical ) {
+		const hierarchicalField = view.layout?.hierarchical;
+		data.forEach( ( item: Item ) => {
+			const parentId = ( item as Record< string, number > )[
+				hierarchicalField
+			];
+			const itemId = +getItemId( item );
+			if ( parentId === 0 ) {
+				topLevelItemIds.push( itemId );
+				primaryFieldValues[ itemId ] = getPrimaryFieldValue( item );
+			} else {
+				if ( ! children.hasOwnProperty( parentId ) ) {
+					children[ parentId ] = [];
+				}
+				nestedItemIds.push( itemId );
+				children[ parentId ].push( item );
+				primaryFieldValues[ itemId ] = getPrimaryFieldValue( item );
+			}
+		} );
+		const allIds = [ ...topLevelItemIds, ...nestedItemIds ];
+		Object.keys( children ).forEach( ( key: string ) => {
+			const numericKey = +key;
+			if ( ! allIds.includes( numericKey ) ) {
+				children[ numericKey ].forEach( ( child ) => {
+					orphans.push( +getItemId( child ) );
+				} );
+			}
+		} );
+
+		data.forEach( ( item ) => {
+			const itemId = +getItemId( item );
+			if (
+				topLevelItemIds.includes( itemId ) ||
+				orphans.includes( itemId )
+			) {
+				rows.push( item );
+				levels[ itemId ] = 0;
+				rows.push(
+					...getAllDescendants( itemId, children, levels, 1 )
+				);
+			}
+		} );
+	} else {
+		rows.push( ...data );
+	}
+
+	const getItemLevel = ( item: Item ) => {
+		if ( ! view.layout?.hierarchical ) {
+			return;
+		}
+
+		return levels[ +getItemId( item ) ];
+	};
 
 	return (
 		<>
@@ -418,10 +521,11 @@ function ViewTable< Item >( {
 				</thead>
 				<tbody>
 					{ hasData &&
-						data.map( ( item, index ) => (
+						rows.map( ( item, index ) => (
 							<TableRow
 								key={ getItemId( item ) }
 								item={ item }
+								level={ getItemLevel( item ) }
 								hasBulkActions={ hasBulkActions }
 								actions={ actions }
 								fields={ fields }
