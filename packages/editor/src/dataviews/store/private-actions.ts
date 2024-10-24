@@ -160,6 +160,7 @@ export const registerPostTypeSchema =
 		].filter( Boolean );
 
 		const fields = [
+			{ id: 'id', type: 'text' }, // TODO: only for testing purposes
 			postTypeConfig.supports?.thumbnail &&
 				currentTheme?.[ 'theme-supports' ]?.[ 'post-thumbnails' ] &&
 				featuredImageField,
