@@ -7,3 +7,21 @@
 export function sanitizeCommentString( str ) {
 	return str.trim();
 }
+
+/**
+ * Gets the background color of the editor canvas.
+ *
+ * @return { string } Background color of the editor canvas.
+ */
+export function getEditorCanvasBackgroundColor() {
+	const iframe = document.querySelector( 'iframe[name="editor-canvas"]' );
+	const iframeDocument =
+		iframe?.contentDocument || iframe?.contentWindow.document;
+	const iframeBody = iframeDocument?.querySelector( 'body' );
+	if ( iframeBody ) {
+		const style = window.getComputedStyle( iframeBody );
+		return style.backgroundColor;
+	}
+
+	return '';
+}
