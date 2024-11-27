@@ -126,6 +126,7 @@ export function useEventHandlers( { clientId, isSelected } ) {
 				// ourselves.
 				const img = ownerDocument.createElement( 'canvas' );
 				ownerDocument.body.appendChild( img );
+				img.style.opacity = '0';
 				event.dataTransfer.setDragImage( img, 0, 0 );
 
 				let offset = { x: 0, y: 0 };
