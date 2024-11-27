@@ -5,12 +5,15 @@ import { isTextField } from '@wordpress/dom';
 import { ENTER, BACKSPACE, DELETE } from '@wordpress/keycodes';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { useRefEffect } from '@wordpress/compose';
+import { createRoot } from '@wordpress/element';
+import { store as blocksStore } from '@wordpress/blocks';
 
 /**
  * Internal dependencies
  */
 import { store as blockEditorStore } from '../../../store';
 import { unlock } from '../../../lock-unlock';
+import BlockDraggableChip from '../../../components/block-draggable/draggable-chip';
 
 /**
  * Adds block behaviour:
@@ -21,9 +24,9 @@ import { unlock } from '../../../lock-unlock';
  * @param {string} clientId Block client ID.
  */
 export function useEventHandlers( { clientId, isSelected } ) {
-	const { getBlockRootClientId, isZoomOut, hasMultiSelection } = unlock(
-		useSelect( blockEditorStore )
-	);
+	const { getBlockType } = useSelect( blocksStore );
+	const { getBlockRootClientId, isZoomOut, hasMultiSelection, getBlockName } =
+		unlock( useSelect( blockEditorStore ) );
 	const { insertAfterBlock, removeBlock, resetZoomLevel } = unlock(
 		useDispatch( blockEditorStore )
 	);
@@ -89,12 +92,66 @@ export function useEventHandlers( { clientId, isSelected } ) {
 					srcClientIds: [ clientId ],
 					srcRootClientId: getBlockRootClientId( clientId ),
 				} );
+				event.dataTransfer.effectAllowed = 'move'; // remove "+" cursor
 				event.dataTransfer.clearData();
 				event.dataTransfer.setData( 'wp-blocks', data );
 				const { ownerDocument } = node;
 				const { defaultView } = ownerDocument;
 				const selection = defaultView.getSelection();
 				selection.removeAllRanges();
+
+				const domNode = document.createElement( 'div' );
+				const root = createRoot( domNode );
+				root.render(
+					<BlockDraggableChip
+						icon={ getBlockType( getBlockName( clientId ) ).icon }
+					/>
+				);
+				document.body.appendChild( domNode );
+				domNode.style.position = 'absolute';
+				domNode.style.top = '0';
+				domNode.style.left = '0';
+				domNode.style.zIndex = '1000';
+				domNode.style.pointerEvents = 'none';
+
+				// Setting the drag chip as the drag image actually works, but
+				// the behaviour is slightly different in every browser. In
+				// Safari, it animates, in Firefox it's slightly transparent...
+				// So we set a fake drag image and have to reposition it
+				// ourselves.
+				const img = ownerDocument.createElement( 'canvas' );
+				ownerDocument.body.appendChild( img );
+				event.dataTransfer.setDragImage( img, 0, 0 );
+
+				let offset = { x: 0, y: 0 };
+
+				if ( document !== ownerDocument ) {
+					const frame = defaultView.frameElement;
+					if ( frame ) {
+						const rect = frame.getBoundingClientRect();
+						offset = { x: rect.left, y: rect.top };
+					}
+				}
+
+				// chip handle offset
+				offset.x -= 58;
+
+				function over( e ) {
+					domNode.style.transform = `translate( ${
+						e.clientX + offset.x
+					}px, ${ e.clientY + offset.y }px )`;
+				}
+
+				function end() {
+					ownerDocument.removeEventListener( 'dragover', over );
+					ownerDocument.removeEventListener( 'dragend', end );
+					domNode.remove();
+					img.remove();
+				}
+
+				ownerDocument.addEventListener( 'dragover', over );
+				ownerDocument.addEventListener( 'dragend', end );
+				ownerDocument.addEventListener( 'drop', end );
 			}
 
 			node.addEventListener( 'keydown', onKeyDown );
