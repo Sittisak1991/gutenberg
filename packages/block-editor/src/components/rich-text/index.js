@@ -431,6 +431,10 @@ export function RichTextWrapper(
 				aria-multiline={ ! disableLineBreaks }
 				aria-readonly={ shouldDisableEditing }
 				{ ...props }
+				// Unset draggable for contentEditable elements because it will
+				// interfere with multi block selection when the contentEditable
+				// and draggable elements are the same element.
+				draggable={ undefined }
 				aria-label={
 					bindingsLabel || props[ 'aria-label' ] || placeholder
 				}
