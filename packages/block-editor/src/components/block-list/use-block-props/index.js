@@ -152,7 +152,7 @@ export function useBlockProps( props = {}, { __unstableIsHtml } = {} ) {
 
 	return {
 		tabIndex: blockEditingMode === 'disabled' ? -1 : 0,
-		draggable: true,
+		draggable: hasChildSelected ? undefined : true,
 		...wrapperProps,
 		...props,
 		ref: mergedRefs,
