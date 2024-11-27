@@ -21,7 +21,7 @@ import { unlock } from '../../../lock-unlock';
  * @param {string} clientId Block client ID.
  */
 export function useEventHandlers( { clientId, isSelected } ) {
-	const { getBlockRootClientId, getBlockIndex, isZoomOut } = unlock(
+	const { getBlockRootClientId, isZoomOut, hasMultiSelection } = unlock(
 		useSelect( blockEditorStore )
 	);
 	const { insertAfterBlock, removeBlock, resetZoomLevel } = unlock(
@@ -76,7 +76,11 @@ export function useEventHandlers( { clientId, isSelected } ) {
 			 * @param {DragEvent} event Drag event.
 			 */
 			function onDragStart( event ) {
-				if ( node !== event.target || node.isContentEditable ) {
+				if (
+					node !== event.target ||
+					node.isContentEditable ||
+					hasMultiSelection()
+				) {
 					event.preventDefault();
 					return;
 				}
@@ -105,11 +109,11 @@ export function useEventHandlers( { clientId, isSelected } ) {
 			clientId,
 			isSelected,
 			getBlockRootClientId,
-			getBlockIndex,
 			insertAfterBlock,
 			removeBlock,
 			isZoomOut,
 			resetZoomLevel,
+			hasMultiSelection,
 		]
 	);
 }
