@@ -27,9 +27,13 @@ export function useEventHandlers( { clientId, isSelected } ) {
 	const { getBlockType } = useSelect( blocksStore );
 	const { getBlockRootClientId, isZoomOut, hasMultiSelection, getBlockName } =
 		unlock( useSelect( blockEditorStore ) );
-	const { insertAfterBlock, removeBlock, resetZoomLevel } = unlock(
-		useDispatch( blockEditorStore )
-	);
+	const {
+		insertAfterBlock,
+		removeBlock,
+		resetZoomLevel,
+		startDraggingBlocks,
+		stopDraggingBlocks,
+	} = unlock( useDispatch( blockEditorStore ) );
 
 	return useRefEffect(
 		( node ) => {
@@ -147,11 +151,14 @@ export function useEventHandlers( { clientId, isSelected } ) {
 					ownerDocument.removeEventListener( 'dragend', end );
 					domNode.remove();
 					img.remove();
+					stopDraggingBlocks();
 				}
 
 				ownerDocument.addEventListener( 'dragover', over );
 				ownerDocument.addEventListener( 'dragend', end );
 				ownerDocument.addEventListener( 'drop', end );
+
+				startDraggingBlocks( [ clientId ] );
 			}
 
 			node.addEventListener( 'keydown', onKeyDown );
@@ -171,6 +178,8 @@ export function useEventHandlers( { clientId, isSelected } ) {
 			isZoomOut,
 			resetZoomLevel,
 			hasMultiSelection,
+			startDraggingBlocks,
+			stopDraggingBlocks,
 		]
 	);
 }

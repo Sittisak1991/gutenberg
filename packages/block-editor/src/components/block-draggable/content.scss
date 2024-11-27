@@ -5,10 +5,6 @@
 	opacity: 0.05 !important;
 	border-radius: $radius-small !important;
 
-	// Disabling pointer events during the drag event is necessary,
-	// lest the block might affect your drag operation.
-	pointer-events: none !important;
-
 	// Hide the multi selection indicator when dragging.
 	&::selection {
 		background: transparent !important;
