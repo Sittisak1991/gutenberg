@@ -238,10 +238,6 @@ export default function CollabSidebar() {
 		enableComplementaryArea( 'core', 'edit-post/collab-sidebar' );
 	};
 
-	const AddCommentComponent = blockCommentId
-		? AddCommentToolbarButton
-		: AddCommentButton;
-
 	const { threads } = useSelect( ( select ) => {
 		const { getCurrentPostId } = select( editorStore );
 		const _postId = getCurrentPostId();
@@ -293,6 +289,10 @@ export default function CollabSidebar() {
 	if ( ! isBlockCommentExperimentEnabled || postStatus === 'publish' ) {
 		return null; // or maybe return some message indicating no threads are available.
 	}
+
+	const AddCommentComponent = blockCommentId
+		? AddCommentToolbarButton
+		: AddCommentButton;
 
 	return (
 		<>

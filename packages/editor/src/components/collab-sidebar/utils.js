@@ -17,10 +17,10 @@ export function getEditorCanvasBackgroundColor() {
 	const iframe = document.querySelector( 'iframe[name="editor-canvas"]' );
 	const iframeDocument =
 		iframe?.contentDocument || iframe?.contentWindow.document;
-	const iframeBody = iframeDocument?.querySelector( 'body' );
+	const iframeBody = iframeDocument?.body;
 	if ( iframeBody ) {
 		const style = window.getComputedStyle( iframeBody );
-		return style.backgroundColor;
+		return style?.backgroundColor;
 	}
 
 	return '';
