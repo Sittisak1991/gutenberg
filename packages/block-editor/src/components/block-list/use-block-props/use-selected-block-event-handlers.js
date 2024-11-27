@@ -159,6 +159,9 @@ export function useEventHandlers( { clientId, isSelected } ) {
 					document.body.classList.remove(
 						'is-dragging-components-draggable'
 					);
+					ownerDocument.documentElement.classList.remove(
+						'is-dragging'
+					);
 				}
 
 				ownerDocument.addEventListener( 'dragover', over );
@@ -170,6 +173,7 @@ export function useEventHandlers( { clientId, isSelected } ) {
 				document.body.classList.add(
 					'is-dragging-components-draggable'
 				);
+				ownerDocument.documentElement.classList.add( 'is-dragging' );
 			}
 
 			node.addEventListener( 'keydown', onKeyDown );
