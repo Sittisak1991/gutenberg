@@ -86,6 +86,7 @@ export function useEventHandlers( { clientId, isSelected } ) {
 				if (
 					node !== event.target ||
 					node.isContentEditable ||
+					node.ownerDocument.activeElement !== node ||
 					hasMultiSelection()
 				) {
 					event.preventDefault();

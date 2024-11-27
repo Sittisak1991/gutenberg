@@ -115,6 +115,11 @@ function UnforwardedResizableBox(
 			handleClasses={ HANDLE_CLASSES }
 			handleStyles={ HANDLE_STYLES }
 			ref={ ref }
+			// Resizable unfortunately does provide focusable drag handles
+			// (as it should), so capture focus here to prevent block drag
+			// from being triggered.
+			// @ts-expect-error
+			tabIndex={ -1 }
 			{ ...props }
 		>
 			{ children }
