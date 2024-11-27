@@ -21,6 +21,7 @@ $resize-handler-container-size: $resize-handler-size + ($grid-unit-05 * 2); // M
 		width: 100%;
 		height: 100%;
 		z-index: z-index(".components-resizable-box__handle");
+		outline: none;
 	}
 }
 

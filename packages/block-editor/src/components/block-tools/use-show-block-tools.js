@@ -25,7 +25,6 @@ export function useShowBlockTools() {
 			getSettings,
 			__unstableGetEditorMode,
 			isTyping,
-			isDraggingBlocks,
 		} = unlock( select( blockEditorStore ) );
 
 		const clientId =
@@ -49,7 +48,6 @@ export function useShowBlockTools() {
 			! getSettings().hasFixedToolbar &&
 			! _showEmptyBlockSideInserter &&
 			hasSelectedBlock &&
-			! isDraggingBlocks() &&
 			! isEmptyDefaultBlock;
 
 		return {

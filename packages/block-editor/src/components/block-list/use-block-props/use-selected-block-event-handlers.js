@@ -148,12 +148,17 @@ export function useEventHandlers( { clientId, isSelected } ) {
 					}px, ${ e.clientY + offset.y }px )`;
 				}
 
+				over( event );
+
 				function end() {
 					ownerDocument.removeEventListener( 'dragover', over );
 					ownerDocument.removeEventListener( 'dragend', end );
 					domNode.remove();
 					img.remove();
 					stopDraggingBlocks();
+					document.body.classList.remove(
+						'is-dragging-components-draggable'
+					);
 				}
 
 				ownerDocument.addEventListener( 'dragover', over );
@@ -161,6 +166,10 @@ export function useEventHandlers( { clientId, isSelected } ) {
 				ownerDocument.addEventListener( 'drop', end );
 
 				startDraggingBlocks( [ clientId ] );
+				// Important because it hides the block toolbar.
+				document.body.classList.add(
+					'is-dragging-components-draggable'
+				);
 			}
 
 			node.addEventListener( 'keydown', onKeyDown );
