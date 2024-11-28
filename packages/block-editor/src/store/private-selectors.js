@@ -2,7 +2,6 @@
  * WordPress dependencies
  */
 import { createSelector, createRegistrySelector } from '@wordpress/data';
-import { store as preferencesStore } from '@wordpress/preferences';
 
 /**
  * Internal dependencies
@@ -118,7 +117,7 @@ export const getEnabledClientIdsTree = createRegistrySelector( ( select ) =>
 		state.blockEditingModes,
 		state.settings.templateLock,
 		state.blockListSettings,
-		select( preferencesStore ).get( 'core', 'editorTool' ),
+		select( STORE_NAME ).__unstableGetEditorMode( state ),
 	] )
 );
 
