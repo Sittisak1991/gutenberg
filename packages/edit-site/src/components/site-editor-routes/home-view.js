@@ -1,8 +1,8 @@
 /**
  * Internal dependencies
  */
-import Editor from '../editor';
 import SidebarNavigationScreenMain from '../sidebar-navigation-screen-main';
+import { HomeViewPreview } from '../home-view-preview';
 
 export const homeViewRoute = {
 	name: 'home-view',
@@ -11,6 +11,7 @@ export const homeViewRoute = {
 	},
 	areas: {
 		sidebar: <SidebarNavigationScreenMain />,
-		preview: <Editor />,
+		preview: <HomeViewPreview />,
+		mobile: <HomeViewPreview />,
 	},
 };
