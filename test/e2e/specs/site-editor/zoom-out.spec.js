@@ -238,9 +238,22 @@ test.describe( 'Zoom Out', () => {
 	} ) => {
 		await editor.setContent( EDITOR_ZOOM_OUT_CONTENT_NO_SECTION_ROOT );
 
-		// Check that the zoom out button is not visible.
+		// Check that the Zoom Out toggle button is not visible.
 		await expect(
 			page.getByRole( 'button', { name: 'Zoom Out' } )
 		).toBeHidden();
+
+		// Check that activating the Patterns tab in the Inserter does not activate
+		// Zoom Out.
+		await page
+			.getByRole( 'button', {
+				name: 'Block Inserter',
+				exact: true,
+			} )
+			.click();
+
+		await page.getByRole( 'tab', { name: 'Patterns' } ).click();
+
+		await expect( page.locator( '.is-zoomed-out' ) ).toBeHidden();
 	} );
 } );
