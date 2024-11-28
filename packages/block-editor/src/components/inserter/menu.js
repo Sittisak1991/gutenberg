@@ -61,7 +61,7 @@ function InserterMenu(
 	const hasSectionRootClientId = useSelect( ( select ) => {
 		const { getSectionRootClientId } = unlock( select( blockEditorStore ) );
 		const theRoot = getSectionRootClientId();
-		return !! theRoot?.length > 0;
+		return theRoot?.length > 0;
 	}, [] );
 	const [ filterValue, setFilterValue, delayedFilterValue ] =
 		useDebouncedInput( __experimentalFilterValue );
