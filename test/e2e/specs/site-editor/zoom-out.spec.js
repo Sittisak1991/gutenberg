@@ -4,7 +4,8 @@
 const { test, expect } = require( '@wordpress/e2e-test-utils-playwright' );
 
 const EDITOR_ZOOM_OUT_CONTENT = `
-<!-- wp:group {"style":{"spacing":{"padding":{"top":"0","bottom":"0","left":"0","right":"0"}},"dimensions":{"minHeight":"100vh"}},"backgroundColor":"base-2","layout":{"type":"flex","orientation":"vertical","verticalAlignment":"space-between"}} -->
+<!-- wp:group {"tagName":"main","layout":{"type":"constrained"}} -->
+<main class="wp-block-group"><!-- wp:group {"style":{"spacing":{"padding":{"top":"0","bottom":"0","left":"0","right":"0"}},"dimensions":{"minHeight":"100vh"}},"backgroundColor":"base-2","layout":{"type":"flex","orientation":"vertical","verticalAlignment":"space-between"}} -->
 <div class="wp-block-group has-base-2-background-color has-background" style="min-height:100vh;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0"><!-- wp:paragraph -->
 <p>First Section Start</p>
 <!-- /wp:paragraph -->
@@ -58,6 +59,7 @@ const EDITOR_ZOOM_OUT_CONTENT = `
 <!-- wp:paragraph -->
 <p>Fourth Section End</p>
 <!-- /wp:paragraph --></div>
+<!-- /wp:group --></main>
 <!-- /wp:group -->`;
 
 test.describe( 'Zoom Out', () => {
