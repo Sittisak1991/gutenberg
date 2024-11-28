@@ -124,10 +124,15 @@ export function useEventHandlers( { clientId, isSelected } ) {
 				// Safari, it animates, in Firefox it's slightly transparent...
 				// So we set a fake drag image and have to reposition it
 				// ourselves.
-				const img = ownerDocument.createElement( 'canvas' );
-				ownerDocument.body.appendChild( img );
-				img.style.opacity = '0';
-				event.dataTransfer.setDragImage( img, 0, 0 );
+				const dragElement = ownerDocument.createElement( 'div' );
+				// Chrome will show a globe icon if the drag element does not
+				// have dimensions.
+				dragElement.style.width = '1px';
+				dragElement.style.height = '1px';
+				dragElement.style.position = 'fixed';
+				dragElement.style.visibility = 'hidden';
+				ownerDocument.body.appendChild( dragElement );
+				event.dataTransfer.setDragImage( dragElement, 0, 0 );
 
 				let offset = { x: 0, y: 0 };
 
@@ -154,7 +159,7 @@ export function useEventHandlers( { clientId, isSelected } ) {
 					ownerDocument.removeEventListener( 'dragover', over );
 					ownerDocument.removeEventListener( 'dragend', end );
 					domNode.remove();
-					img.remove();
+					dragElement.remove();
 					stopDraggingBlocks();
 					document.body.classList.remove(
 						'is-dragging-components-draggable'
