@@ -67,7 +67,6 @@ test.describe( 'Draggable block', () => {
 		const firstParagraph = editor.canvas.locator(
 			'role=document[name="Block: Paragraph"i] >> text=1'
 		);
-		await dragTo( page, firstParagraph );
 		const firstParagraphBound = await firstParagraph.boundingBox();
 		await dragTo( page, firstParagraphBound.x, firstParagraphBound.y );
 
