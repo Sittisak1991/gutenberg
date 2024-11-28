@@ -104,6 +104,8 @@ export function useBlockProps( props = {}, { __unstableIsHtml } = {} ) {
 		canMove,
 	} = useContext( PrivateBlockContext );
 
+	const canDrag = canMove && ! hasChildSelected;
+
 	// translators: %s: Type of block (i.e. Text, Image etc)
 	const blockLabel = sprintf( __( 'Block: %s' ), blockTitle );
 	const htmlSuffix = mode === 'html' && ! __unstableIsHtml ? '-visual' : '';
@@ -123,7 +125,7 @@ export function useBlockProps( props = {}, { __unstableIsHtml } = {} ) {
 			isEnabled: isSectionBlock,
 		} ),
 		useScrollIntoView( { isSelected } ),
-		canMove ? ffDragRef : undefined,
+		canDrag ? ffDragRef : undefined,
 	] );
 
 	const blockEditContext = useBlockEditContext();
@@ -156,7 +158,7 @@ export function useBlockProps( props = {}, { __unstableIsHtml } = {} ) {
 
 	return {
 		tabIndex: blockEditingMode === 'disabled' ? -1 : 0,
-		draggable: canMove ? true : undefined,
+		draggable: canDrag ? true : undefined,
 		...wrapperProps,
 		...props,
 		ref: mergedRefs,

@@ -6,11 +6,7 @@ import { useRefEffect } from '@wordpress/compose';
 export function useFirefoxDraggableCompatibility() {
 	return useRefEffect( ( node ) => {
 		function onDown( event ) {
-			if ( event.target.isContentEditable ) {
-				node.draggable = false;
-			} else {
-				node.draggable = true;
-			}
+			node.draggable = ! event.target.isContentEditable;
 		}
 		const { ownerDocument } = node;
 		ownerDocument.addEventListener( 'pointerdown', onDown );
