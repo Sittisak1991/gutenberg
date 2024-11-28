@@ -24,6 +24,7 @@ import {
  */
 import Layout from './components/layout';
 import { unlock } from './lock-unlock';
+import './plugin';
 
 const {
 	BackButton: __experimentalMainDashboardButton,
