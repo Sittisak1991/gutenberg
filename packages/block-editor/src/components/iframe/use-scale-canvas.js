@@ -379,7 +379,9 @@ export function useScaleCanvas( {
 			 * If we already have an animation running, reverse it.
 			 */
 			if ( animationRef.current ) {
-				animationRef.current.reverse();
+				if ( animationRef.current.timeline.currentTime ) {
+					animationRef.current.reverse();
+				}
 				// Swap the transition to/from refs so that we set the correct values when
 				// finishZoomOutAnimation runs.
 				const tempTransitionFrom = transitionFromRef.current;
