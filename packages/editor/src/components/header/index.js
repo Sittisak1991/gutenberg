@@ -107,7 +107,7 @@ function Header( {
 	const hasSectionRootClientId = useSelect( ( select ) => {
 		const { getSectionRootClientId } = unlock( select( blockEditorStore ) );
 		const theRoot = getSectionRootClientId();
-		return !! theRoot?.length > 0;
+		return theRoot?.length > 0;
 	}, [] );
 
 	/*
