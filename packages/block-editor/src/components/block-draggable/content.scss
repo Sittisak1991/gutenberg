@@ -4,6 +4,10 @@
 	opacity: 0.1 !important;
 	border-radius: $radius-small !important;
 
+	iframe {
+		pointer-events: none;
+	}
+
 	// Hide the multi selection indicator when dragging.
 	&::selection {
 		background: transparent !important;
