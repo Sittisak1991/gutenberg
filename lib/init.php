@@ -57,3 +57,19 @@ function gutenberg_menu() {
 	);
 }
 add_action( 'admin_menu', 'gutenberg_menu', 9 );
+
+
+function gutenberg_test_block_bindings_post_meta() {
+	register_meta(
+		'post',
+		'text_custom_field',
+		array(
+			'default'      => 'Value of the text custom field',
+			'show_in_rest' => true,
+			'single'       => true,
+			'type'         => 'string',
+		)
+	);
+}
+
+add_action( 'init', 'gutenberg_test_block_bindings_post_meta' );
