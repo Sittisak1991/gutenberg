@@ -100,6 +100,7 @@ export function useBlockProps( props = {}, { __unstableIsHtml } = {} ) {
 		isTemporarilyEditingAsBlocks,
 		defaultClassName,
 		isSectionBlock,
+		canMove,
 	} = useContext( PrivateBlockContext );
 
 	// translators: %s: Type of block (i.e. Text, Image etc)
@@ -152,7 +153,7 @@ export function useBlockProps( props = {}, { __unstableIsHtml } = {} ) {
 
 	return {
 		tabIndex: blockEditingMode === 'disabled' ? -1 : 0,
-		draggable: hasChildSelected ? undefined : true,
+		draggable: ! hasChildSelected && canMove ? true : undefined,
 		...wrapperProps,
 		...props,
 		ref: mergedRefs,
