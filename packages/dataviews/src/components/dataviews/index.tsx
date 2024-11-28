@@ -53,7 +53,6 @@ type DataViewsProps< Item > = {
 
 const defaultGetItemId = ( item: ItemWithId ) => item.id;
 const defaultIsItemClickable = () => false;
-const defaultOnClickItem = () => {};
 const EMPTY_ARRAY: any[] = [];
 
 export default function DataViews< Item >( {
@@ -70,7 +69,7 @@ export default function DataViews< Item >( {
 	defaultLayouts,
 	selection: selectionProperty,
 	onChangeSelection,
-	onClickItem = defaultOnClickItem,
+	onClickItem,
 	isItemClickable = defaultIsItemClickable,
 	header,
 }: DataViewsProps< Item > ) {
