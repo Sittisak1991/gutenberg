@@ -2,6 +2,7 @@
  * WordPress dependencies
  */
 import { createSelector, createRegistrySelector } from '@wordpress/data';
+import { store as preferencesStore } from '@wordpress/preferences';
 
 /**
  * Internal dependencies
@@ -109,16 +110,16 @@ function getEnabledClientIdsTreeUnmemoized( state, rootClientId ) {
  *
  * @return {Object[]} Tree of block objects with only clientID and innerBlocks set.
  */
-export const getEnabledClientIdsTree = createSelector(
-	getEnabledClientIdsTreeUnmemoized,
-	( state ) => [
+export const getEnabledClientIdsTree = createRegistrySelector( ( select ) =>
+	createSelector( getEnabledClientIdsTreeUnmemoized, ( state ) => [
 		state.blocks.order,
 		state.derivedBlockEditingModes,
 		state.derivedNavModeBlockEditingModes,
 		state.blockEditingModes,
 		state.settings.templateLock,
 		state.blockListSettings,
-	]
+		select( preferencesStore ).get( 'core', 'editorTool' ),
+	] )
 );
 
 /**
