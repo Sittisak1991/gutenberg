@@ -52,7 +52,7 @@ type DataViewsProps< Item > = {
 	: { getItemId: ( item: Item ) => string } );
 
 const defaultGetItemId = ( item: ItemWithId ) => item.id;
-const defaultIsItemClickable = () => false;
+const defaultIsItemClickable = () => true;
 const EMPTY_ARRAY: any[] = [];
 
 export default function DataViews< Item >( {
