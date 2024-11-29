@@ -2,7 +2,12 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { useSelect, useDispatch, resolveSelect } from '@wordpress/data';
+import {
+	useSelect,
+	useDispatch,
+	resolveSelect,
+	subscribe,
+} from '@wordpress/data';
 import { useState, useMemo } from '@wordpress/element';
 import { comment as commentIcon } from '@wordpress/icons';
 import { addFilter } from '@wordpress/hooks';
@@ -22,6 +27,7 @@ import { store as editorStore } from '../../store';
 import AddCommentButton from './comment-button';
 import AddCommentToolbarButton from './comment-button-toolbar';
 import { getEditorCanvasBackgroundColor } from './utils';
+import { useGlobalStylesContext } from '../global-styles-provider';
 
 const isBlockCommentExperimentEnabled =
 	window?.__experimentalEnableBlockComment;
@@ -213,6 +219,7 @@ function CollabSidebarContent( {
 export default function CollabSidebar() {
 	const [ showCommentBoard, setShowCommentBoard ] = useState( false );
 	const { enableComplementaryArea } = useDispatch( interfaceStore );
+	const { getActiveComplementaryArea } = useSelect( interfaceStore );
 
 	const { postStatus } = useSelect( ( select ) => {
 		return {
@@ -285,6 +292,21 @@ export default function CollabSidebar() {
 		return result;
 	}, [ threads ] );
 
+	// Get the global styles to set the background color of the sidebar.
+	const { merged: GlobalStyles } = useGlobalStylesContext();
+	const backgroundColor = GlobalStyles?.styles?.color?.background;
+
+	if ( 0 < resultComments.length ) {
+		const unsubscribe = subscribe( () => {
+			const activeSidebar = getActiveComplementaryArea( 'core' );
+
+			if ( ! activeSidebar ) {
+				enableComplementaryArea( 'core', 'edit-post/collab-sidebar' );
+				unsubscribe();
+			}
+		} );
+	}
+
 	// Check if the experimental flag is enabled.
 	if ( ! isBlockCommentExperimentEnabled || postStatus === 'publish' ) {
 		return null; // or maybe return some message indicating no threads are available.
@@ -321,7 +343,8 @@ export default function CollabSidebar() {
 					showCommentBoard={ showCommentBoard }
 					setShowCommentBoard={ setShowCommentBoard }
 					styles={ {
-						backgroundColor: getEditorCanvasBackgroundColor(),
+						backgroundColor:
+							backgroundColor ?? getEditorCanvasBackgroundColor(),
 					} }
 				/>
 			</PluginSidebar>
