@@ -52,6 +52,7 @@ function useMovingAnimation( { triggerAnimationOnChange, clientId } ) {
 		isFirstMultiSelectedBlock,
 		isBlockMultiSelected,
 		isAncestorMultiSelected,
+		isDraggingBlocks,
 	} = useSelect( blockEditorStore );
 
 	// Whenever the trigger changes, we need to take a snapshot of the current
@@ -83,6 +84,11 @@ function useMovingAnimation( { triggerAnimationOnChange, clientId } ) {
 					scrollContainer.scrollTop += diff;
 				}
 			}
+		}
+
+		// Neither animate nor scroll.
+		if ( isDraggingBlocks() ) {
+			return;
 		}
 
 		// We disable the animation if the user has a preference for reduced
@@ -153,6 +159,7 @@ function useMovingAnimation( { triggerAnimationOnChange, clientId } ) {
 		isFirstMultiSelectedBlock,
 		isBlockMultiSelected,
 		isAncestorMultiSelected,
+		isDraggingBlocks,
 	] );
 
 	return ref;
