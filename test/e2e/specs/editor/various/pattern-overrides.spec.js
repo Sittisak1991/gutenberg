@@ -269,9 +269,16 @@ test.describe( 'Pattern Overrides', () => {
 
 			await editor.setContent( '' );
 
+			// Insert the core/group block with a tagName of 'main'
 			await editor.insertBlock( {
-				name: 'core/block',
-				attributes: { ref: id },
+				name: 'core/group',
+				attributes: { tagName: 'main' },
+				innerBlocks: [
+					{
+						name: 'core/block',
+						attributes: { ref: id },
+					},
+				],
 			} );
 
 			const patternBlock = editor.canvas.getByRole( 'document', {
