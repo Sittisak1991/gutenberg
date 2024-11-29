@@ -26,7 +26,6 @@ import { AddComment } from './add-comment';
 import { store as editorStore } from '../../store';
 import AddCommentButton from './comment-button';
 import AddCommentToolbarButton from './comment-button-toolbar';
-import { getEditorCanvasBackgroundColor } from './utils';
 import { useGlobalStylesContext } from '../global-styles-provider';
 
 const isBlockCommentExperimentEnabled =
@@ -301,7 +300,7 @@ export default function CollabSidebar() {
 			const activeSidebar = getActiveComplementaryArea( 'core' );
 
 			if ( ! activeSidebar ) {
-				enableComplementaryArea( 'core', 'edit-post/collab-sidebar' );
+				enableComplementaryArea( 'core', collabSidebarName );
 				unsubscribe();
 			}
 		} );
@@ -343,8 +342,7 @@ export default function CollabSidebar() {
 					showCommentBoard={ showCommentBoard }
 					setShowCommentBoard={ setShowCommentBoard }
 					styles={ {
-						backgroundColor:
-							backgroundColor ?? getEditorCanvasBackgroundColor(),
+						backgroundColor,
 					} }
 				/>
 			</PluginSidebar>
