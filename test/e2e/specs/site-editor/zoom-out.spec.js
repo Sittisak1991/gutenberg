@@ -83,6 +83,8 @@ test.describe( 'Zoom Out', () => {
 
 	test.afterAll( async ( { requestUtils } ) => {
 		await requestUtils.activateTheme( 'twentytwentyone' );
+		await requestUtils.deleteAllTemplates( 'wp_template' );
+		await requestUtils.deleteAllTemplates( 'wp_template_part' );
 	} );
 
 	test.beforeEach( async ( { admin } ) => {
